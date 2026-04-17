@@ -1,4 +1,3 @@
-# Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -35,6 +34,18 @@ class Purchase(models.Model):
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
     date_purchased = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+
+    def get_accessible_subjects(self):
+        if self.purchase_type == 'department' and self.department:
+            # Get all subjects in the department
+            department_subjects = Subject.objects.filter(department=self.department)
+            # Get standalone subjects (Maths and English)
+            standalone_subjects = Subject.objects.filter(is_standalone=True)
+            # Combine both
+            return department_subjects | standalone_subjects
+        elif self.purchase_type == 'standalone' and self.subject:
+            return Subject.objects.filter(id=self.subject.id)
+        return Subject.objects.none()
 
     def __str__(self):
         return f"{self.user.username} - {self.purchase_type}"
