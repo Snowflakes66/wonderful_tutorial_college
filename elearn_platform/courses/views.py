@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .models import Department, Subject, Purchase
 
 def home(request):
     return render(request, 'courses/home.html')
@@ -61,3 +62,10 @@ def user_logout(request):
 @login_required
 def download_app(request):
     return render(request, 'courses/download_app.html')
+
+
+
+@login_required
+def dashboard(request):
+    purchases = Purchase.objects.filter(user=request.user, is_active=True)
+    return render(request, 'courses/dashboard.html', {'purchases': purchases})

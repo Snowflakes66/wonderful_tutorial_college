@@ -1,0 +1,45 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}Dashboard - Wonderful Tutorial College{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="fw-bold mb-4">My Dashboard</h2>
+
+        {% if purchases %}
+            <h5 class="text-muted mb-3">Your Purchased Courses</h5>
+            {% for purchase in purchases %}
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    {% if purchase.purchase_type == 'department' %}
+                        <h5 class="fw-bold">{{ purchase.department.name }} Package</h5>
+                        <p class="text-muted">You have access to the following subjects:</p>
+                        <ul>
+                            {% for subject in purchase.get_accessible_subjects %}
+                                <li>{{ subject.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <h5 class="fw-bold">{{ purchase.subject.name }}</h5>
+                        <p class="text-muted">Standalone subject</p>
+                    {% endif %}
+                    <small class="text-muted">Purchased on {{ purchase.date_purchased|date:"d M Y" }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="card shadow-sm p-4 text-center">
+                <h5 class="text-muted">You have not purchased any courses yet.</h5>
+                <a href="{% url 'home' %}" class="btn btn-primary mt-3">Browse Courses</a>
+            </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <h5 class="fw-bold">Download Our App</h5>
+            <p class="text-muted">Access your courses on the go!</p>
+            <a href="{% url 'download_app' %}" class="btn btn-primary">Go to Download Page</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
