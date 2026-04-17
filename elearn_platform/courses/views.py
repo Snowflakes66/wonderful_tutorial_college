@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     return render(request, 'courses/home.html')
@@ -32,8 +32,8 @@ def register(request):
             last_name=last_name
         )
         user.save()
-        messages.success(request, 'Account created successfully! Please login.')
-        return redirect('login')
+        login(request, user)
+        return redirect('download_app')
 
     return render(request, 'courses/register.html')
 
@@ -57,3 +57,7 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def download_app(request):
+    return render(request, 'courses/download_app.html')
